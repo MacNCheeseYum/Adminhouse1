@@ -1,0 +1,634 @@
+local pserver = false
+local toggles = {
+    perm = true,
+    antipunish = true,
+    antimesh = true,
+    antiname = true,
+    joinnoti = false
+}
+
+local Connections = {}
+
+local function isParent(Object)
+	local success = pcall(function()
+		return Object.Parent
+	end)
+
+	if success then
+		return true
+	end
+
+	return false
+end
+
+local function isService(Object)
+	local success = pcall(function()
+		return game:GetService(Object.Name)
+	end)
+
+	return success
+end
+
+local function hasProperty(Object, Property)
+	local success = pcall(function()
+		return Object[Property]
+	end)
+
+	if success then
+		return true
+	end
+
+	return false
+end
+
+local function Includes(Table, Object)
+	for i, v in pairs(Table) do
+		if v == Object then
+			return {true, i}
+		end
+	end
+	return {false}
+end
+
+local users = {
+    getname = function(self, name)
+        local sel = nil
+        for i,plr in pairs(game.Players:GetPlayers()) do
+            if string.lower(string.sub(plr.Name, 1, #name)) == string.lower(name) or string.lower(string.sub(plr.DisplayName, 1, #name)) == string.lower(name) then
+                sel = plr
+            end
+        end
+        if sel == nil then
+            return false
+        else
+            return sel.Name, sel.DisplayName
+        end
+    end,
+    getID = function(self, name)
+	    return game.Players:FindFirstChild(name).UserId
+    end,
+    getchar = function(self, user)
+        if game:GetService('Players'):FindFirstChild(user) then
+            return game:GetService('Players')[user].Character or game:GetService('Players')[user].CharacterAdded:Wait()
+        end
+    end
+}
+
+local function runCmd(msg)
+    game.Players:Chat(msg)
+end
+
+-- Auto F3X giver
+
+Connections[#Connections + 1] = game.Players.LocalPlayer.CharacterAdded:connect(function()
+	task.wait(.65)
+	runCmd(":f3x")
+end)
+
+getgenv().banned = { { "d", "Kaderth" }, { "d", "Build_Robber" } } -- more like Banned Robber !!!! (Add people to it like so, I didn't like the old ban system, clayton or funzy or whoever made that.)
+
+getgenv().gpcheck = true
+local userId = game.Players.LocalPlayer.UserId
+
+--// Gamepass checker \\--
+
+local passid = 1293677
+
+if gpcheck == true then
+    if string.match(game:HttpGet("https://inventory.roproxy.com/v1/users/" .. userId .. "/items/GamePass/" .. passid), passid) then
+        print("Perm found")
+        nperm = false
+    else
+        print("Perm not found. I recommend you to atleast have one perm account for this game")
+        nperm = true
+    end
+end
+
+coroutine.wrap(function()while task.wait()do if nperm then if game.Workspace.SecureParts.AdminPads:FindFirstChild(game.Players.LocalPlayer.Name.."'s admin")then task.wait(.40)else local a=game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame;task.wait(0.05)game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(14,28,106)task.wait(1)game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(10,28,107)task.wait(1)game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(5,28,107)task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(2,28,107)task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(-2,28,107)task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(-6,28,107)task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(-10,28,107)game.Players:Chat(":invisible")task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(-14,28,107)task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=CFrame.new(-18,28,107)game.Players:Chat(":invisible")task.wait()game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=a;game.Players:Chat(":invisible")end end end end)()
+
+if nperm then
+wait(2)
+end
+
+runCmd(":btools me | fuck") -- added the f word at the end so FE chatloggers don't pick it up
+
+task.spawn(function()
+game.StarterGui.ResetPlayerGuiOnSpawn = false
+
+function hasGamepass(plrId, id)
+	local plrData = game:HttpGet("https://inventory.roproxy.com/v1/users/" .. plrId .. "/items/GamePass/" .. id)
+	local hasPerm = false
+	if string.match(plrData, tostring(id)) then
+		hasPerm = true
+	end
+	return hasPerm
+end
+
+PlayerList = Instance.new("ScreenGui")
+
+coroutine.wrap(function()
+		-- Instances:
+
+		local PlayerListMaster = Instance.new("Frame")
+		local SizeOffsetFrame = Instance.new("Frame")
+		local UIListLayout = Instance.new("UIListLayout")
+		local ScrollingFrameContainer = Instance.new("Frame")
+		local UIListLayout_2 = Instance.new("UIListLayout")
+
+		--Properties:
+
+		PlayerList.Name = "PlayerList"
+		PlayerList.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+		PlayerList.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		PlayerList.DisplayOrder = 1
+
+		PlayerListMaster.Name = "PlayerListMaster"
+		PlayerListMaster.Parent = PlayerList
+		PlayerListMaster.AnchorPoint = Vector2.new(1, 0)
+		PlayerListMaster.BackgroundTransparency = 1.000
+		PlayerListMaster.Position = UDim2.new(1, -4, 0, 40)
+		PlayerListMaster.Size = UDim2.new(0, 166, 0.1, 0)
+
+		SizeOffsetFrame.Name = "SizeOffsetFrame"
+		SizeOffsetFrame.Parent = PlayerListMaster
+		SizeOffsetFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+		SizeOffsetFrame.BackgroundTransparency = 1.000
+		SizeOffsetFrame.Position = UDim2.new(0.5, 0, 0.881410241, 0)
+		SizeOffsetFrame.Size = UDim2.new(1, 0, 2.5, 0) -- {1, 0},{3.003, 0}
+
+		UIListLayout.Parent = SizeOffsetFrame
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+		ScrollingFrameContainer.Name = "ScrollingFrameContainer"
+		ScrollingFrameContainer.Parent = SizeOffsetFrame
+		ScrollingFrameContainer.BackgroundColor3 = Color3.fromRGB(31, 33, 35)
+		ScrollingFrameContainer.BackgroundTransparency = 0.300
+		ScrollingFrameContainer.BorderSizePixel = 0
+		ScrollingFrameContainer.LayoutOrder = 3
+		ScrollingFrameContainer.Position = UDim2.new(0, 0, 0.0145454546, 0)
+		ScrollingFrameContainer.Size = UDim2.new(1, 0, 0.883456707, 40)
+
+		UIListLayout_2.Parent = ScrollingFrameContainer
+		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+
+		-- Scripts:
+
+		local function KTJYHGG_fake_script()
+			local script = Instance.new("LocalScript", ScrollingFrameContainer)
+
+			function addBox(isPerm, plrName, plrDisplay)
+				local PlayerHere = Instance.new("Frame")
+				local ChildrenFrame = Instance.new("Frame")
+				local NameFrame = Instance.new("Frame")
+				local DisplayName = Instance.new("Frame")
+				local PlayerName = Instance.new("TextLabel")
+				local SizeConstraint = Instance.new("UITextSizeConstraint")
+				local PermUI = Instance.new("Frame")
+				local PlayerName_2 = Instance.new("TextLabel")
+				local SizeConstraint_2 = Instance.new("UITextSizeConstraint")
+				local PlayerName_3 = Instance.new("Frame")
+				local PlayerName_4 = Instance.new("TextLabel")
+				local SizeConstraint_3 = Instance.new("UITextSizeConstraint")
+				local Layout = Instance.new("UIListLayout")
+
+				PlayerHere.Name = plrName
+				PlayerHere.Parent = script.Parent
+				PlayerHere.BackgroundTransparency = 1.000
+				PlayerHere.ClipsDescendants = true
+				PlayerHere.Size = UDim2.new(1, 0, 0.158816129, 0)
+
+				ChildrenFrame.Name = "ChildrenFrame"
+				ChildrenFrame.Parent = PlayerHere
+				ChildrenFrame.BackgroundTransparency = 1.000
+				ChildrenFrame.Size = UDim2.new(1, 0, 0, 40)
+
+				NameFrame.Name = "NameFrame"
+				NameFrame.Parent = ChildrenFrame
+				NameFrame.BackgroundTransparency = 1.000
+				NameFrame.Size = UDim2.new(0, 150, 0, 40)
+
+				DisplayName.Name = "DisplayName"
+				DisplayName.Parent = NameFrame
+				DisplayName.BackgroundTransparency = 1.000
+				DisplayName.LayoutOrder = 3
+				DisplayName.Position = UDim2.new(0.0799999982, 0, 0, 0)
+				DisplayName.Size = UDim2.new(0.639999986, -34, 1, 0)
+
+				PlayerName.Name = "PlayerName"
+				PlayerName.Parent = DisplayName
+				PlayerName.BackgroundTransparency = 1.000
+				PlayerName.Position = UDim2.new(0.439606011, 0, 0.704999983, 0)
+				PlayerName.Size = UDim2.new(1, 0, 0.439999998, 0)
+				PlayerName.Font = Enum.Font.GothamSemibold
+				PlayerName.Text = plrDisplay
+				PlayerName.TextColor3 = Color3.fromRGB(255, 255, 255)
+				PlayerName.TextScaled = true
+				PlayerName.TextSize = 14.000
+				PlayerName.TextWrapped = true
+				PlayerName.TextXAlignment = Enum.TextXAlignment.Left
+
+				SizeConstraint.Name = "SizeConstraint"
+				SizeConstraint.Parent = PlayerName
+				SizeConstraint.MaxTextSize = 14
+				SizeConstraint.MinTextSize = 9
+
+				PermUI.Name = "PermUI"
+				PermUI.Parent = NameFrame
+				PermUI.BackgroundTransparency = 1.000
+				PermUI.LayoutOrder = 3
+				PermUI.Position = UDim2.new(0.0799999982, 0, 0, 0)
+				PermUI.Size = UDim2.new(0.446666658, -34, 1, 0)
+
+				PlayerName_2.Name = "PlayerName"
+				PlayerName_2.Parent = PermUI
+				PlayerName_2.BackgroundTransparency = 1.000
+				PlayerName_2.Position = UDim2.new(0, 0, 0.280000001, 0)
+				PlayerName_2.Size = UDim2.new(1, 0, 0.439999998, 0)
+				PlayerName_2.Font = Enum.Font.GothamSemibold
+				PlayerName_2.Text = "    "
+				if isPerm then
+					PlayerName_2.Text = "Perm"
+				end
+				PlayerName_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+				PlayerName_2.TextScaled = true
+				PlayerName_2.TextSize = 14.000
+				PlayerName_2.TextWrapped = true
+				PlayerName_2.TextXAlignment = Enum.TextXAlignment.Left
+
+				SizeConstraint_2.Name = "SizeConstraint"
+				SizeConstraint_2.Parent = PlayerName_2
+				SizeConstraint_2.MaxTextSize = 14
+				SizeConstraint_2.MinTextSize = 9
+
+				PlayerName_3.Name = "PlayerName"
+				PlayerName_3.Parent = NameFrame
+				PlayerName_3.BackgroundTransparency = 1.000
+				PlayerName_3.LayoutOrder = 3
+				PlayerName_3.Size = UDim2.new(1, -34, 1, 0)
+
+				PlayerName_4.Name = "PlayerName"
+				PlayerName_4.Parent = PlayerName_3
+				PlayerName_4.BackgroundTransparency = 1.000
+				PlayerName_4.Position = UDim2.new(0.422413796, 0, 0.280000001, 0)
+				PlayerName_4.Size = UDim2.new(1, 0, 0.439999998, 0)
+				PlayerName_4.Font = Enum.Font.GothamSemibold
+				PlayerName_4.Text = plrName
+				PlayerName_4.TextColor3 = Color3.fromRGB(255, 255, 255)
+				PlayerName_4.TextScaled = true
+				PlayerName_4.TextSize = 14.000
+				PlayerName_4.TextWrapped = true
+				PlayerName_4.TextXAlignment = Enum.TextXAlignment.Left
+
+				SizeConstraint_3.Name = "SizeConstraint"
+				SizeConstraint_3.Parent = PlayerName_4
+				SizeConstraint_3.MaxTextSize = 14
+				SizeConstraint_3.MinTextSize = 9
+
+				Layout.Name = "Layout"
+				Layout.Parent = ChildrenFrame
+				Layout.FillDirection = Enum.FillDirection.Horizontal
+				Layout.SortOrder = Enum.SortOrder.Name
+				Layout.VerticalAlignment = Enum.VerticalAlignment.Center
+			end
+
+			game.StarterGui:SetCoreGuiEnabled("PlayerList", false)
+
+			game.Players.ChildRemoved:Connect(function(player)
+					if script.Parent:FindFirstChild(player.Name) then
+						script.Parent:FindFirstChild(player.Name):remove()
+					end
+				end)
+
+			while wait(1) do
+				for _, plr in pairs(game.Players:GetChildren()) do
+					if not script.Parent:FindFirstChild(plr.Name) then
+						addBox(hasGamepass(plr.UserId, 1293677), plr.Name, plr.DisplayName)
+						task.wait()
+					--script.Parent.Size = UDim2.new(0, 166, 0, (#script.Parent:GetChildren() - 1) * 50)
+					end
+				end
+			end
+		end
+		coroutine.wrap(KTJYHGG_fake_script)()
+	end
+)()
+end)
+
+--// AH CUSTOM FUCTIONS \\--
+local ahfuncs = {}
+
+function ahfuncs:getencrypt(amount)
+	local things = string.split("`134567890-=qwertyu[]asdfghjkl;'#zxcvbnm,./!£$%^&*()_+QWERTYUIOP{}ASDFGHJKL:@~ZXCVBNM<>?", "")
+	local txt = ""
+	local count = amount
+	if amount == nil then count = 5 end
+	for i = 1, count do
+		txt = txt..things[math.random(1, #things)]
+	end
+	return txt
+end
+
+function ahfuncs:getadmin()
+    if 1== 1 then return end -- remove this
+
+	if pserver == true then 
+		return true
+	end
+	local spos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+	task.wait(0.05)
+	repeat
+		for i,v in pairs(workspace.SecureParts.AdminPads:GetChildren()) do
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Head.CFrame
+			wait()
+		end
+		wait()
+	until workspace.SecureParts.AdminPads:FindFirstChild(game.Players.LocalPlayer.Name.."'s admin")
+	task.wait()
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spos
+end
+
+function ahfuncs:admincheck(plr)
+	local player = game.Players.LocalPlayer.Name
+	
+	if plr ~= nil then
+		player = users:getname(plr)
+	end
+	if pserver == true and player == game.Players.LocalPlayer.Name then
+		return true
+	end
+	if workspace.SecureParts.AdminPads:FindFirstChild(player.."'s admin") then
+		return true
+	else
+		return false
+	end
+end
+
+function ahfuncs:getsecureparts()
+	local parts = {}
+	for i,v in pairs(game:GetService("Workspace").SecureParts:GetDescendants()) do
+		table.insert(parts, v)
+	end
+	for i,v in pairs(game.Workspace:GetChildren()) do
+		if v.Name == "Camera" or v.Name == "SecureParts" or v.Name == "BuildingBlocks" or v.Name == "Terrain" or game.Players:FindFirstChild(v.Name) or game.Players:FindFirstChild(v.Parent.Name) or v.Name == "fe2a0a6473265e5f9775fa" then
+			table.insert(parts, v)
+		end
+	end
+	return parts
+end
+
+function ahfuncs:getnonsecureparts()
+	local parts = {}
+	for i,v in pairs(game:GetService("Workspace"):GetDescendants()) do
+		if not table.find(ahfuncs:getsecureparts(), v) then
+			table.insert(parts, v)
+		end
+	end
+	return parts
+end
+
+function ahfuncs:nonsecure()
+	local parts = {}
+	for i,v in pairs(game.Workspace:GetChildren()) do
+		if not table.find(ahfuncs:getsecureparts(), v) then
+			table.insert(parts, v)
+		end
+	end
+	return parts
+end
+
+function ahfuncs:savecmd(cmd, cmdname)
+	game.ReplicatedStorage.Network.CommandSaving:InvokeServer({'SAVE', cmdname, cmd})
+end
+
+function ahfuncs:runcmd(cmd)
+	if not ahfuncs:admincheck() then
+		ahfuncs:getadmin()
+	end
+	game.Players:Chat(cmd)
+end
+
+function ahfuncs:loadbuild(name)
+	local thing = game:GetService("ReplicatedStorage").Network.BuildSaving:InvokeServer({"LOAD", name})
+	return thing.Objects, thing.Success
+end
+
+
+function ahfuncs:items(Item)
+	local IsItemClassAllowed = (Item:IsA 'BasePart' and not Item:IsA 'Terrain') or
+		(Item:IsA 'Model' and not Item:IsA 'Workspace') or
+		Item:IsA 'Folder' or
+		Item:IsA 'Smoke' or
+		Item:IsA 'Fire' or
+		Item:IsA 'Sparkles' or
+		Item:IsA 'DataModelMesh' or
+		Item:IsA 'Decal' or
+		Item:IsA 'Texture' or
+		Item:IsA 'Light'
+	if not IsItemClassAllowed then
+		return false
+	end
+	return true
+end
+
+function ahfuncs:noti(text)
+	ahfuncs:runcmd(":chatnotifyc all 255 0 0 [Private_Kiwi]: "..text)
+end
+
+function ahfuncs:deleteparts()
+	local newtab = ahfuncs:getsecureparts()
+	local meshes = 0
+	local parts = 0
+	local seats = 0
+	local vehichelseats = 0
+	local particles = 0
+	for i,v in pairs(ahfuncs:getnonsecureparts()) do
+		if v:IsA("FileMesh") then meshes = meshes + 1 end
+		if v:IsA("Part") then parts = parts + 1 end
+		if v:IsA("Seat") then seats = seats + 1 end
+		if v:IsA("VehicleSeat") then vehichelseats = vehichelseats + 1 end
+		if v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then particles = particles + 1 end
+		local args = {
+			[1] = "Remove",
+			[2] = {v}
+		}
+
+		game.Players.LocalPlayer:WaitForChild("Backpack"):WaitForChild("Folder"):WaitForChild("SyncAPI"):WaitForChild("ServerEndpoint"):InvokeServer(unpack(args))
+	end
+
+	local data = "Chromo Part Remover\n"
+	if meshes ~= 0 then
+		data = data.."Meshes Deleted : "..meshes
+		data = data.."\n"
+	end
+
+	if parts ~= 0 then
+		data = data.."Parts Deleted : "..parts
+		data = data.."\n"
+	end
+
+	if seats ~= 0 then
+		data = data.."Seats Deleted : "..seats
+		data = data.."\n"
+	end
+
+	if vehichelseats ~= 0 then
+		data = data.."Vehicle Seats Deleted : "..vehichelseats
+		data = data.."\n"
+	end
+
+	if particles ~= 0 then
+		data = data.."Particles Deleted : "..particles
+		data = data.."\n"
+	end
+
+	ahfuncs:runcmd(":n "..data)
+end
+
+---- stuff ive added
+
+local AdonisRemote = game:GetService("JointsService"):FindFirstChildOfClass("RemoteEvent") or game:GetService("JointsService").ChildAdded:Wait()
+
+local function AdonisClient()
+	for i, v in pairs(getreg()) do
+		if type(v) == "function" then
+			local UpValues = debug.getupvalues(v)
+			for a, b in pairs(UpValues) do
+				if type(b) == "table" then
+					local AdonisClient = nil
+					pcall(function()
+						if b.Core and type(b.Core) == "table" then
+							AdonisClient = b
+						end
+					end)
+					if AdonisClient ~= nil then 
+						return AdonisClient 
+					end
+				end
+			end
+		end
+	end
+end
+
+local function getNil(ObjName, ObjClass) 
+	local Target = nil
+
+	for i, v in pairs(getnilinstances()) do 
+		pcall(function()
+			if v.ClassName == ObjClass and v.Name == ObjName then
+				Target = v
+			end 
+		end)
+	end
+
+	return Target
+end
+
+ClientMover = getNil("ClientMover", "LocalScript")
+AClient = getNil("Client", "ModuleScript")
+
+local function getKey()
+	local UnEncryptedKey = AdonisClient().Core.Key
+	local TargetString = "ProcessCommand"
+	local endStr = {}
+
+	for i = 1, #TargetString do
+		local keyPos = (i % #UnEncryptedKey) + 1
+		endStr[i] = string.char(((string.byte(string.sub(TargetString, i, i)) + string.byte(string.sub(UnEncryptedKey, keyPos, keyPos))) % 126) + 1)
+	end
+
+	return table.concat(endStr)
+end
+
+local function AdonisRemoteArgs()
+	return AdonisClient().Remote.Sent, AdonisClient().Remote.Received
+end
+
+local function RunCommand(NewCmd)
+	local Sent, Recieved = AdonisRemoteArgs()
+
+	if NewCmd:sub(1,1) ~= ":" and NewCmd:sub(1,1) ~= "!" then
+		NewCmd = ":"..NewCmd
+	end
+
+	AdonisRemote:FireServer(
+		{
+			["Received"] = Recieved,
+			["Loader"] = ClientMover,
+			["Mode"] = "Fire",
+			["Module"] = AClient,
+			["Sent"] = Sent
+		},
+		getKey(),
+		NewCmd -- .." ".."\237\190\140" anti oldlogs
+	)
+end
+
+local Workspace = game:GetService("Workspace")
+local PlayerService = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+local UserInputService = game:GetService("UserInputService")
+local TeleportService = game:GetService("TeleportService")
+local StarterPackStorage = game:GetService("StarterPack")
+local StarterPlayerStorage = game:GetService("StarterPlayer")
+local OldChatService = game:GetService("Chat")
+local SoundService = game:GetService('SoundService')
+local InsertService = game:GetService("InsertService")
+
+local pf = "."
+
+if not isfile('banlist.txt') then 
+	writefile('banlist.txt', "funzy likes cum \n\n\n")
+elseif not isfile('AHvarstartups.txt') then 
+	writefile('AHvarstartups.txt', pf.."iy fuck") -- again, the f word at the end so FE chatloggers can't pick it up (so I recommend you not removing it blindly)
+end
+
+local file = readfile("banlist.txt") -- If you do not have this file then just create it, as simple as that. Anyone added to the file, per line will be added to the getgenv().gearwhitelisted table
+for plr in file:gmatch("[^\r\n]+") do
+    table.insert(banned, { "d", plr }) -- d standing for delete as the delete kick just deletes the target's player instance
+end
+
+local SecureParts = Workspace:WaitForChild('SecureParts')
+local AdminPads = SecureParts:WaitForChild("AdminPads")
+
+local LocalPlayer = PlayerService.LocalPlayer
+local function LocalCharacter() return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait() end
+local function LocalBackpack() return LocalPlayer.Backpack end
+
+local function ServerEndpoint()
+	local RelevantTable = {}
+
+	for _, v in LocalCharacter():GetChildren() do
+		table.insert(RelevantTable, v)
+	end
+
+	for _, v in LocalBackpack():GetChildren() do
+		table.insert(RelevantTable, v)
+	end
+
+
+	for i, v in pairs(RelevantTable) do
+		if v:IsA('Tool') and v.Name == 'Building Tools' and #v:GetChildren() > 2 then
+			return v:WaitForChild('SyncAPI'):WaitForChild('ServerEndpoint') -- this section is for regular f3x games where remotes are stored in the tool
+		end
+	end
+
+	for i, v in pairs(RelevantTable) do
+		if v:IsA('Folder') and v:FindFirstChild('SyncAPI') then
+			return v:WaitForChild('SyncAPI'):WaitForChild('ServerEndpoint')
+		end
+	end
+
+	return nil
+end
+
+local function ChangeProperty(TPart, Prop, PVal)
+	local PropData = {}
+	PropData[tostring(Prop) .. "\0"] = PVal
+
+	ServerEndpoint():InvokeServer(
+	"SyncSurface",
+	{{
+		Part = 
